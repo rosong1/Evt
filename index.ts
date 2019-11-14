@@ -11,10 +11,7 @@ export default class Evt {
         ~listener.indexOf(fn) && listener.splice(listener.indexOf(fn), 1);
     }
     public emit(key: ListenKey, ...args: any[]) {
-        (this.container[key] || []).forEach((fn) => {
-            fn(...args);
-            fn.__once && this.off(key, fn);
-        });
+        (this.container[key] || []).forEach((fn) => fn(...args));
     }
     public once(key: ListenKey, fn: Function) {
         return this.on(key, _once(fn));
