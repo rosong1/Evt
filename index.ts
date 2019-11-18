@@ -14,21 +14,16 @@ export default class Evt {
         (this.container[key] || []).forEach((fn) => fn(...args));
     }
     public once(key: ListenKey, fn: Function) {
-        return this.on(key, _once(fn));
+        const onceWrapper = (...args) => {
+            fn.apply(this, args);
+            this.off(key, onceWrapper);
+        };
+        return this.on(key, onceWrapper);
     }
     public removeAll(key?: ListenKey) {
         key 
             ? (delete this.container[key])
             : (this.container = Object.create(null));
-    }
-}
-function _once(fn: Function) {
-    let shouldRun = true;
-    return function onceWrapper(...args) {
-        if (shouldRun) {
-            shouldRun = false;
-            return fn(...args);
-        }
     }
 }
 type ListenKey = string | number;
